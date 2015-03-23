@@ -7,12 +7,12 @@ This [Kotlin](kotlinlang.org) tool applies the [Type-Safe Builder](http://kotlin
 So that `Person.Builder().firstName("Aaron").lastName("Sarazan").build()` becomes
 ```
 person {
-  firstName { "Aaron" }
-  lastName { "Sarazan" }
+  firstName { "Aaron" } // For basic types, you can use block syntax...
+  lastName("Sarazan") // ...or parameter syntax!
 }
 ```
 
-#Usage
+###Usage
 
 This project is still in very early development, so the usage is pretty spartan:
 
