@@ -23,7 +23,7 @@ This project is still in very early development, so the usage is pretty spartan:
 kbuilders <package_name> <java file list>
 ```
 
-This will output monolithic Kotlin code containing the necessary extension methods for all proto builders in the provided file list. You should probably redirect it into a file somewhere.
+This will output monolithic Kotlin code containing the necessary extension methods for all builders in the provided file list. You should probably redirect it into a file somewhere.
 
 ###Known Issues
 * Doesn't currently play nice with enum types, as it doesn't know to import them. Fix incoming.
