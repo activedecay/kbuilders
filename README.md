@@ -28,3 +28,4 @@ This will output monolithic Kotlin code containing the necessary extension metho
 ###Known Issues
 * Doesn't currently play nice with enum types, as it doesn't know to import them. Fix incoming.
 * IDEA's indexer really hates the monolithic approach. Would be nice to have it smartly create a hierarchical directory of extension files.
+* Only tested with [Wire](https://github.com/square/wire). Should theoretically work with any builder implementation.
