@@ -5,7 +5,7 @@ One of the most frustrating aspects of working with [Protocol Buffers](https://g
 This [Kotlin](kotlinlang.org) tool applies the [Type-Safe Builder](http://kotlinlang.org/docs/reference/type-safe-builders.html) pattern to your protobuf builders, so that you can easily construct new objects with a nicer syntax.
 
 So that `Person.Builder().firstName("Aaron").lastName("Sarazan").build()` becomes
-```
+```kotlin
 person {
   firstName { "Aaron" } // For basic types, you can use block syntax...
   lastName("Sarazan") // ...or parameter syntax!
