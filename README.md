@@ -19,7 +19,7 @@ To build this project, execute `./gradlew distZip`. This will produce a zip whic
 
 This project is still in very early development, so the usage is pretty spartan:
 
-```
+```bash
 kbuilders <package_name> <java file list>
 ```
 
