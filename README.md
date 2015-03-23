@@ -12,10 +12,13 @@ person {
 }
 ```
 
+###Build
+To build this project, execute `./gradlew distZip`. This will produce a zip which contains the exec script and the java libraries bundled together.
+
 ###Usage
 
 This project is still in very early development, so the usage is pretty spartan:
 
 ```
-./kbuilders <package_name> <java file list>
+kbuilders <package_name> <java file list>
 ```
