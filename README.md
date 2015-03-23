@@ -22,3 +22,5 @@ This project is still in very early development, so the usage is pretty spartan:
 ```
 kbuilders <package_name> <java file list>
 ```
+
+This will output monolithic Kotlin code containing the necessary extension methods for all proto builders in the provided file list. You should probably redirect it into a file somewhere.
