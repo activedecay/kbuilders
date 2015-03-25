@@ -25,3 +25,9 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-runtime:0.11.91"
     compile 'com.github.javaparser:javaparser-core:2.0.0'
 }
+
+task copyTestResources(type: Copy) {
+    from sourceSets.test.resources
+    into sourceSets.test.output.classesDir
+}
+processTestResources.dependsOn copyTestResources
