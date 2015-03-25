@@ -1,0 +1,17 @@
+#!/bin/bash
+
+WIRE_VERSION=1.7.0
+WIRE_JAR=src/test/support/wire/wire-compiler-$WIRE_VERSION-jar-with-dependencies.jar
+WIRE_PROTOC="java -jar $WIRE_JAR"
+
+PROTO_DIR=src/test/proto
+WIRE_OUT=src/test/kotlin
+
+echo "Building new protobufs..."
+$WIRE_PROTOC --java_out=$WIRE_OUT --proto_path=. `find $PROTO_DIR -name '*.proto'`
+
+mkdir -p src/test/resources/proto
+for i in `find $WIRE_OUT -name *java`
+do
+cp $i src/test/resources/proto/`basename $i .java`.txt
+done

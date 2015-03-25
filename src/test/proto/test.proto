@@ -1,0 +1,19 @@
+package com.levelmoney.kbuilders.test.proto;
+
+message Person {
+    optional string first = 1;
+    optional string last = 2;
+    repeated Address address = 3;
+    repeated string phone = 4;
+}
+
+message Address {
+    optional string street = 1;
+    optional int64 number = 2;
+    optional AddressType type = 3;
+}
+
+enum AddressType {
+    RESIDENTIAL = 1;
+    BUSINESS = 2;
+}
