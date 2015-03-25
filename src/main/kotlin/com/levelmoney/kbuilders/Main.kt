@@ -5,6 +5,9 @@ import com.github.javaparser.ast.PackageDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
+import com.levelmoney.kbuilders.javaparser.extensions.builderMethods
+import com.levelmoney.kbuilders.javaparser.extensions.isBuildMethod
+import com.levelmoney.kbuilders.javaparser.extensions.toKotlin
 import java.io.File
 
 /**
@@ -48,12 +51,12 @@ private data class FileMap(val pakage: String, val klasses: MutableList<Klass>) 
 ${klasses.map { "import ${it.import}.${it.type}" }.join("\n")}
 ${klasses.map {
                 it.factoryMethod() + "\n" +
-                        it.methods.map { it.toString () }.join("\n")
+                        it.methods.map { it.toKotlin () }.join("\n")
             }.join("\n")}
 """
 }
 
-private data class Klass(val import: String, val type: String, val methods: List<Decl>) {
+private data class Klass(val import: String, val type: String, val methods: List<MethodDeclaration>) {
     public fun factoryMethod(): String =
             """
 public fun ${$type.camelCase()}(fn: $type.Builder.() -> Unit): $type {
@@ -68,10 +71,6 @@ private fun String.camelCase(): String {
     return replaceRange(0, 1, get(0).toString().toLowerCase())
 }
 
-private data class Decl(val type: String, val enclosing: String, val name: String) {
-    override fun toString(): String = "public fun $enclosing.$name(fn: () -> $type): $enclosing = $name(fn())"
-}
-
 private class Visitor : VoidVisitorAdapter<MutableList<Klass>>() {
 
     private var pakage: String? = null
@@ -81,11 +80,11 @@ private class Visitor : VoidVisitorAdapter<MutableList<Klass>>() {
     }
 
     override fun visit(n: ClassOrInterfaceDeclaration, arg: MutableList<Klass>) {
-        val decls = arrayListOf<Decl>()
+        val decls = arrayListOf<MethodDeclaration>()
         n.getMembers().forEach {
             if (it is ClassOrInterfaceDeclaration) {
                 if (it.getName().equals("Builder")) {
-                    BuilderVisitor(n.getName()).visit(it, decls)
+                    decls.addAll(it.builderMethods())
                 } else {
                     Visitor().visit(it, arg)
                 }
@@ -93,15 +92,4 @@ private class Visitor : VoidVisitorAdapter<MutableList<Klass>>() {
         }
         arg.add(Klass(pakage!!, n.getName(), decls))
     }
-}
-
-private class BuilderVisitor(val type: String) : VoidVisitorAdapter<MutableList<Decl>>() {
-
-    override fun visit(n: MethodDeclaration, arg: MutableList<Decl>) {
-        val enclosing = type + ".Builder"
-        val name = n.getName()
-        val type = n.getParameters()?.firstOrNull()?.getType()?.toString()?:return
-        arg.add(Decl(type, enclosing, name))
-    }
-
 }
