@@ -3,7 +3,9 @@ package com.levelmoney.kbuilders.test
 import com.github.javaparser.JavaParser
 import com.github.javaparser.ast.CompilationUnit
 import com.levelmoney.kbuilders.javaparser.extensions.getBuilders
-import com.levelmoney.wire.kbuilders.generate
+import com.levelmoney.kbuilders.javaparser.extensions.getMethodStrings
+import com.levelmoney.kbuilders.javaparser.extensions.getRequiredImports
+import com.levelmoney.kbuilders.generateString
 import org.junit.Test
 import java.io.File
 import java.net.URL
@@ -25,9 +27,8 @@ public class Tests {
     }
 
     Test fun testBuilderCount() {
-        val test = generate("test", listOf(getResourceFile("proto/Address.txt")))
-
         val cu = getAddress()
+        val str = generateString(getResourceFile("proto/Address.txt"))
         assertEquals(1, cu.getBuilders().size())
     }
 

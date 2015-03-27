@@ -1,13 +1,11 @@
-package com.levelmoney.wire.kbuilders
+package com.levelmoney.kbuilders
 
 import com.github.javaparser.JavaParser
 import com.github.javaparser.ast.PackageDeclaration
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
-import com.levelmoney.kbuilders.javaparser.extensions.builderMethods
-import com.levelmoney.kbuilders.javaparser.extensions.isBuildMethod
-import com.levelmoney.kbuilders.javaparser.extensions.toKotlin
+import com.levelmoney.kbuilders.javaparser.extensions.*
 import java.io.File
 
 /**
@@ -16,80 +14,23 @@ import java.io.File
  */
 
 fun main(args : Array<String>) {
-    val pakage = args.first()
-    val files = arrayListOf<File>()
-    for (i in 1..(args.size() - 1)) {
-        files.add(File(args[i]))
-    }
-    print(generate(pakage, files))
+    val file = args[0]
+    print(generateString(File(file)))
 }
 
 
 /**
  * Generates a full kotlin file from the provided java files.
  */
-public fun generate(pakage: String, files: List<File>): String {
-    return generateFileMap(pakage, files).toString()
-}
-
-private fun generateFileMap(pakage: String, files: List<File>): FileMap {
-    return FileMap(pakage, files.flatMap { fileToKlasses (it) }.toArrayList())
-}
-
-private fun fileToKlasses(file: File): MutableList<Klass> {
+public fun generateString(file: File): String {
     val cu = JavaParser.parse(file)
-    val retval = arrayListOf<Klass>()
-    Visitor().visit(cu, retval)
-    return retval
-}
+    val pakage = cu.getPackage().getName().toString()
+    val imports = cu.getRequiredImports()
+    val methods = cu.getBuilders().flatMap { it.getMethodStrings() }
+    return """package $pakage
 
-private data class FileMap(val pakage: String, val klasses: MutableList<Klass>) {
+${imports.map{ "import " + it }.join("\n")}
 
-    override fun toString(): String =
-            """package $pakage
-
-${klasses.map { "import ${it.import}.${it.type}" }.join("\n")}
-${klasses.map {
-                it.factoryMethod() + "\n" +
-                        it.methods.map { it.toKotlin () }.join("\n")
-            }.join("\n")}
+${methods.join("\n")}
 """
-}
-
-private data class Klass(val import: String, val type: String, val methods: List<MethodDeclaration>) {
-    public fun factoryMethod(): String =
-            """
-public fun ${$type.camelCase()}(fn: $type.Builder.() -> Unit): $type {
-    val builder = $type.Builder()
-    builder.fn()
-    return builder.build()
-}
-"""
-}
-
-private fun String.camelCase(): String {
-    return replaceRange(0, 1, get(0).toString().toLowerCase())
-}
-
-private class Visitor : VoidVisitorAdapter<MutableList<Klass>>() {
-
-    private var pakage: String? = null
-    override fun visit(n: PackageDeclaration, arg: MutableList<Klass>?) {
-        super.visit(n, arg)
-        pakage = n.getName().toString()
-    }
-
-    override fun visit(n: ClassOrInterfaceDeclaration, arg: MutableList<Klass>) {
-        val decls = arrayListOf<MethodDeclaration>()
-        n.getMembers().forEach {
-            if (it is ClassOrInterfaceDeclaration) {
-                if (it.getName().equals("Builder")) {
-                    decls.addAll(it.builderMethods())
-                } else {
-                    Visitor().visit(it, arg)
-                }
-            }
-        }
-        arg.add(Klass(pakage!!, n.getName(), decls))
-    }
 }

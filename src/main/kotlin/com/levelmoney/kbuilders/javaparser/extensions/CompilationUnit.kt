@@ -14,3 +14,9 @@ public fun CompilationUnit.getBuilders(): List<ClassOrInterfaceDeclaration> {
     GetBuilderVisitor().visit(this, retval)
     return retval
 }
+
+public fun CompilationUnit.getRequiredImports(): List<String> {
+    val retval = arrayListOf(getPackage().getName().toString() + ".*")
+    retval.addAll(getImports().map { it.getName().toString() })
+    return retval
+}

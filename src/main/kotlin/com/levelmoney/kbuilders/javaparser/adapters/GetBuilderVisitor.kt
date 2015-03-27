@@ -17,7 +17,7 @@ class GetBuilderVisitor: VoidVisitorAdapter<MutableList<ClassOrInterfaceDeclarat
         n.getMembers().forEach {
             if (it is ClassOrInterfaceDeclaration) {
                 if (it.isBuilder()) {
-                    arg.add(n)
+                    arg.add(it)
                 } else {
                     visit(it, arg)
                 }
