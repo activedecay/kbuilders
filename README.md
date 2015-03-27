@@ -13,19 +13,18 @@ person {
 ```
 
 ###Build
-To build this project, execute `./gradlew distZip`. This will produce a zip which contains the exec script and the java libraries bundled together.
+To build this project, execute `./gradlew jar`. This will produce `build/libs/kbuilder.jar`.
 
 ###Usage
 
 This project is still in very early development, so the usage is pretty spartan:
 
 ```bash
-kbuilders <package_name> <java file list>
+java -jar kbuilder.jar <java file>
 ```
 
-This will output monolithic Kotlin code containing the necessary extension methods for all builders in the provided file list. You should probably redirect it into a file somewhere.
+This will output monolithic Kotlin code containing the necessary extension methods for all builders in the file. You should probably redirect it into a file somewhere.
 
 ###Known Issues
-* Doesn't currently play nice with enum types, as it doesn't know to import them. Fix incoming.
-* IDEA's indexer really hates the monolithic approach. Would be nice to have it smartly create a hierarchical directory of extension files.
+* Need to produce a convenience script that will walk a directory and create the files
 * Only tested with [Wire](https://github.com/square/wire). Should theoretically work with any builder implementation.
