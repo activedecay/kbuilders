@@ -2,7 +2,7 @@ package com.levelmoney.kbuilders.javaparser.extensions
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
-import com.github.javaparser.ast.type.ClassOrInterfaceType
+import com.levelmoney.kbuilders.Config
 
 /**
  * Created by Aaron Sarazan on 3/24/15
@@ -13,14 +13,15 @@ public fun MethodDeclaration.isBuildMethod():Boolean {
     return getName().equals("build") && !getType().toString().equals("void")
 }
 
-public fun MethodDeclaration.toKotlin(): String {
+public fun MethodDeclaration.toKotlin(config: Config): String {
     assertIsBuilder()
     val builderClass = getClassOrInterface()
     val enclosing = builderClass.getTypeForThisBuilder()
     val builderName = builderClass.getName()
     val type = kotlinifyType(getParameters().first().getType().toString())
-    val name = getName ()
-    return "public fun $enclosing.$builderName.$name(fn: () -> $type): $enclosing.$builderName = $name(fn())"
+    val name = getName()
+    val inline = if (config.inline) " inline " else " "
+    return "public${inline}fun $enclosing.$builderName.${config.methodPrefix}$name(fn: () -> $type): $enclosing.$builderName = $name(fn())"
 }
 
 public fun MethodDeclaration.getClassOrInterface(): ClassOrInterfaceDeclaration {

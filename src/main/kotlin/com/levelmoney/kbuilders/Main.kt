@@ -14,25 +14,31 @@ import java.io.File
  */
 
 /**
- * java -jar kbuilder.jar --proto_root=<dir> --kotlin_root=<dir>
+ * java -jar kbuilder.jar --protoRoot=<dir> --kotlinRoot=<dir>
  */
 fun main(args : Array<String>) {
     if (args.size() < 2) {
-        println("Usage: java -jar kbuilder.jar --proto_root=<dir> --kotlin_root=<dir>")
+        println("Usage: java -jar kbuilder.jar --protoRoot=<dir> --kotlinRoot=<dir>")
         return
     }
     val parser = OptionParser()
-    parser.accepts("proto_root").withRequiredArg()
-    parser.accepts("kotlin_root").withRequiredArg()
+    parser.accepts("protoRoot").withRequiredArg()
+    parser.accepts("kotlinRoot").withRequiredArg()
+    parser.accepts("methodPrefix").withRequiredArg()
+    parser.accepts("inline")
     val options = parser.parse(*args)
 
-    val protoRoot = options.valueOf("proto_root").toString()
-    val kotlinRoot = options.valueOf("kotlin_root").toString()
+    val protoRoot = options.valueOf("protoRoot").toString()
+    val kotlinRoot = options.valueOf("kotlinRoot").toString()
 
+    val config = Config(
+            inline      = options.has("inline"),
+            methodPrefix= options.valueOf("methodPrefix")?.toString()?:""
+    )
     val dir = File(protoRoot)
     dir.recurse {
         if (it.isFile()) {
-            val pkgAndText = generatePackageAndText(it)
+            val pkgAndText = generatePackageAndText(it, config)
             if (pkgAndText != null) {
                 val name = it.getName().replace("."+it.extension, ".kt")
                 val (pkg, text) = pkgAndText
@@ -48,13 +54,13 @@ fun main(args : Array<String>) {
 /**
  * Generates a full kotlin file from the provided java files.
  */
-public fun generatePackageAndText(file: File): Pair<String, String>? {
+public fun generatePackageAndText(file: File, config: Config): Pair<String, String>? {
     val cu = JavaParser.parse(file)
     val pakage = cu.getPackage().getName().toString()
     val imports = cu.getRequiredImports()
     val builders = cu.getBuilders()
     if (builders.isEmpty()) return null
-    val methods = cu.getBuilders().flatMap { it.getMethodStrings() }
+    val methods = cu.getBuilders().flatMap { it.getMethodStrings(config) }
     return Pair(pakage,
 """package $pakage
 

@@ -20,7 +20,7 @@ To build this project, execute `./gradlew jar`. This will produce `build/libs/kb
 This project is still in very early development, so the usage is pretty spartan:
 
 ```bash
-java -jar kbuilders.jar --proto_root=<root of java proto files> --kotlin_root=<root of destination kotlin files>
+java -jar kbuilders.jar --protoRoot=<root of java proto files> --kotlinRoot=<root of destination kotlin files>
 ```
 
 This will produce a `.kt` file for each `.java` file in the tree that contains builders.

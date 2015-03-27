@@ -1,9 +1,9 @@
 package com.levelmoney.kbuilders.javaparser.extensions
 
-import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
 import com.github.javaparser.ast.body.MethodDeclaration
 import com.github.javaparser.ast.type.ReferenceType
+import com.levelmoney.kbuilders.Config
 
 /**
  * Created by Aaron Sarazan on 3/24/15
@@ -48,8 +48,8 @@ public fun ClassOrInterfaceDeclaration.getCreator(): String {
 }"""
 }
 
-public fun ClassOrInterfaceDeclaration.getMethodStrings(): List<String> {
+public fun ClassOrInterfaceDeclaration.getMethodStrings(config: Config): List<String> {
     val retval = arrayListOf(getCreator())
-    retval.addAll(getBuilderMethods().map { it.toKotlin() })
+    retval.addAll(getBuilderMethods().map { it.toKotlin(config) })
     return retval
 }
