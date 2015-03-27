@@ -26,6 +26,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:0.11.91"
     compile "org.jetbrains.kotlin:kotlin-runtime:0.11.91"
     compile 'com.github.javaparser:javaparser-core:2.0.0'
+    compile 'net.sf.jopt-simple:jopt-simple:4.9-beta-1'
 }
 
 task copyTestResources(type: Copy) {
