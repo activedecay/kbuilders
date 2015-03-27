@@ -18,7 +18,7 @@ public fun MethodDeclaration.toKotlin(): String {
     val builderClass = getClassOrInterface()
     val enclosing = builderClass.getTypeForThisBuilder()
     val builderName = builderClass.getName()
-    val type = getParameters().first().getType().toString()
+    val type = kotlinifyType(getParameters().first().getType().toString())
     val name = getName ()
     return "public fun $enclosing.$builderName.$name(fn: () -> $type): $enclosing.$builderName = $name(fn())"
 }
@@ -27,12 +27,19 @@ public fun MethodDeclaration.getClassOrInterface(): ClassOrInterfaceDeclaration 
     return getParentNode() as ClassOrInterfaceDeclaration
 }
 
-//public fun MethodDeclaration.getImports(): List<ClassOrInterfaceDeclaration> {
-//    val retval = arrayListOf<ClassOrInterfaceDeclaration>()
-//    retval.add(getParentNode() as ClassOrInterfaceDeclaration)
-//    retval.addAll(getParameters().map { (it.getType() as ClassOrInterfaceType). })
-//    return retval
-//}
+public fun kotlinifyType(type: String): String {
+    return when (type) {
+        "byte" -> "Byte"
+        "short" -> "Short"
+        "int", "Integer" -> "Int"
+        "long" -> "Long"
+        "float" -> "Float"
+        "double" -> "Double"
+        "boolean" -> "Boolean"
+        "char" -> "Char"
+        else -> type
+    }
+}
 
 public fun MethodDeclaration.assertIsBuilder() {
     getClassOrInterface().assertIsBuilder()
