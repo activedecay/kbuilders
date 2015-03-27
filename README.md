@@ -2,7 +2,7 @@
 
 One of the most frustrating aspects of working with [Protocol Buffers](https://github.com/google/protobuf) is the unwieldy construction syntax, especially when building unit tests.
 
-This [Kotlin](kotlinlang.org) tool applies the [Type-Safe Builder](http://kotlinlang.org/docs/reference/type-safe-builders.html) pattern to your protobuf builders, so that you can easily construct new objects with a nicer syntax.
+This [Kotlin](kotlinlang.org) tool applies the [Type-Safe Builder](http://kotlinlang.org/docs/reference/type-safe-builders.html) pattern to your protobuf builders (or any Builders!), so that you can easily construct new objects with a nicer syntax.
 
 So that `Person.Builder().firstName("Aaron").lastName("Sarazan").build()` becomes
 ```kotlin
@@ -13,14 +13,14 @@ person {
 ```
 
 ###Build
-To build this project, execute `./gradlew jar`. This will produce `build/libs/kbuilder.jar`.
+To build this project, execute `./gradlew jar`. This will produce `build/libs/kbuilders.jar`.
 
 ###Usage
 
 This project is still in very early development, so the usage is pretty spartan:
 
 ```bash
-java -jar kbuilder.jar --proto_root=<root of java proto files> --kotlin_root=<root of destination kotlin files>
+java -jar kbuilders.jar --proto_root=<root of java proto files> --kotlin_root=<root of destination kotlin files>
 ```
 
 This will produce a `.kt` file for each `.java` file in the tree that contains builders.
