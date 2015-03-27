@@ -20,11 +20,11 @@ To build this project, execute `./gradlew jar`. This will produce `build/libs/kb
 This project is still in very early development, so the usage is pretty spartan:
 
 ```bash
-java -jar kbuilder.jar <java file>
+java -jar kbuilder.jar --proto_root=<root of java proto files> --kotlin_root=<root of destination kotlin files>
 ```
 
-This will output monolithic Kotlin code containing the necessary extension methods for all builders in the file. You should probably redirect it into a file somewhere.
+This will produce a `.kt` file for each `.java` file in the tree that contains builders.
 
 ###Known Issues
-* Need to produce a convenience script that will walk a directory and create the files
+* Still has some trouble with internal classes.
 * Only tested with [Wire](https://github.com/square/wire). Should theoretically work with any builder implementation.
