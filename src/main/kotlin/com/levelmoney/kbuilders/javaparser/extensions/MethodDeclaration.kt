@@ -37,6 +37,13 @@ public fun kotlinifyType(type: String): String {
         "double" -> "Double"
         "boolean" -> "Boolean"
         "char" -> "Char"
+        else -> kotlinifyOther(type)
+    }
+}
+
+public fun kotlinifyOther(type: String): String {
+    return when {
+        type.endsWith("[]") -> kotlinifyType(type.replace("[]", "")) + "Array"
         else -> type
     }
 }
