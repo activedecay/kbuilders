@@ -21,11 +21,11 @@ becomes
 buildPerson {
   firstName { "Aaron" } // For basic types, you can use block syntax...
   lastName("Sarazan") // ...or parameter syntax!
-  address(buildAddress {
+  address { buildAddress {
     number(847)
     street("Sansome")
     addressType(AddressType.BUSINESS)
-  })
+  } }
 }
 ```
 
