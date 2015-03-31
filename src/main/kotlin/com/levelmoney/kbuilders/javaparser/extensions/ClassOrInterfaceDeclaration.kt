@@ -38,18 +38,30 @@ public fun ClassOrInterfaceDeclaration.assertIsBuilder() {
     if (!isBuilder()) throw IllegalStateException()
 }
 
-public fun ClassOrInterfaceDeclaration.getCreator(): String {
+public fun ClassOrInterfaceDeclaration.getCreator(config: Config): String {
     assertIsBuilder()
     val type = getTypeForThisBuilder().toString()
-    return """public fun build$type(fn: $type.Builder.() -> Unit): $type {
+    val inline = if (config.inline) " inline " else " "
+    return """public${inline}fun build$type(fn: $type.Builder.() -> Unit): $type {
     val builder = $type.Builder()
     builder.fn()
     return builder.build()
 }"""
 }
 
+public fun ClassOrInterfaceDeclaration.getRebuild(config: Config): String {
+    assertIsBuilder()
+    val type = getTypeForThisBuilder().toString()
+    val inline = if (config.inline) " inline " else " "
+    return """public${inline}fun $type.rebuild(fn: $type.Builder.() -> Unit): $type {
+    val builder = $type.Builder(this)
+    builder.fn()
+    return builder.build()
+}"""
+}
+
 public fun ClassOrInterfaceDeclaration.getMethodStrings(config: Config): List<String> {
-    val retval = arrayListOf(getCreator())
+    val retval = arrayListOf(getCreator(config),getRebuild(config))
     retval.addAll(getBuilderMethods().map { it.toKotlin(config) })
     return retval
 }

@@ -41,3 +41,4 @@ crashlytics-build.properties
 build
 out.map
 annotations
+tmp
