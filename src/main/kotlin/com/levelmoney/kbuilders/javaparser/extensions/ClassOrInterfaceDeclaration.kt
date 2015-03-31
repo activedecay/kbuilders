@@ -10,6 +10,15 @@ import com.levelmoney.kbuilders.Config
  * Copyright(c) 2015 Level, Inc.
  */
 
+public fun ClassOrInterfaceDeclaration.getInternalClasses(): List<ClassOrInterfaceDeclaration> {
+    return getMembers().filterIsInstance<ClassOrInterfaceDeclaration>()
+}
+
+// This could return false positives but should be adequate for v1.0
+public fun ClassOrInterfaceDeclaration.getBuilderClass(): ClassOrInterfaceDeclaration? {
+    return getInternalClasses().firstOrNull { it.isBuilder() }
+}
+
 public fun ClassOrInterfaceDeclaration.getBuilderMethods(): List<MethodDeclaration> {
     return getMethods().filter {
         it.getType().toString().equals(getName()) && it.getParameters()?.size()?:0 > 0
@@ -29,9 +38,7 @@ public fun ClassOrInterfaceDeclaration.getTypeForThisBuilder(): ReferenceType {
 }
 
 public fun ClassOrInterfaceDeclaration.getMethods(): List<MethodDeclaration> {
-    val retval = arrayListOf<MethodDeclaration>()
-    getMembers().forEach { if (it is MethodDeclaration) retval.add(it) }
-    return retval
+    return getMembers().filterIsInstance<MethodDeclaration>()
 }
 
 public fun ClassOrInterfaceDeclaration.assertIsBuilder() {
@@ -62,6 +69,6 @@ public fun ClassOrInterfaceDeclaration.getRebuild(config: Config): String {
 
 public fun ClassOrInterfaceDeclaration.getMethodStrings(config: Config): List<String> {
     val retval = arrayListOf(getCreator(config),getRebuild(config))
-    retval.addAll(getBuilderMethods().map { it.toKotlin(config) })
+    retval.addAll(getBuilderMethods().flatMap { it.toKotlin(config) })
     return retval
 }

@@ -13,7 +13,13 @@ public fun MethodDeclaration.isBuildMethod():Boolean {
     return getName().equals("build") && !getType().toString().equals("void")
 }
 
-public fun MethodDeclaration.toKotlin(config: Config): String {
+public fun MethodDeclaration.toKotlin(config: Config): List<String> {
+    val retval = arrayListOf(baseKotlin(config))
+    // Once we can reliably link TypeParameter <-> ClassOrInterfaceDeclaration, we can add a shortcut method here.
+    return retval
+}
+
+public fun MethodDeclaration.baseKotlin(config: Config): String {
     assertIsBuilder()
     val builderClass = getClassOrInterface()
     val enclosing = builderClass.getTypeForThisBuilder()
@@ -22,6 +28,17 @@ public fun MethodDeclaration.toKotlin(config: Config): String {
     val name = getName()
     val inline = if (config.inline) " inline " else " "
     return "public${inline}fun $enclosing.$builderName.${config.methodPrefix}$name(fn: () -> $type): $enclosing.$builderName = $name(fn())"
+}
+
+public fun MethodDeclaration.builderKotlin(config: Config): String {
+    assertIsBuilder()
+    val builderClass = getClassOrInterface()
+    val enclosing = builderClass.getTypeForThisBuilder()
+    val builderName = builderClass.getName()
+    val type = kotlinifyType(getParameters().first().getType().toString())
+    val name = getName()
+    val inline = if (config.inline) " inline " else " "
+    return "public${inline}fun $enclosing.$builderName.${config.methodPrefix}${name}Built(fn: $type.$builderName.() -> $type.$builderName): $enclosing.$builderName = $name(build$type{fn()})"
 }
 
 public fun MethodDeclaration.getClassOrInterface(): ClassOrInterfaceDeclaration {
