@@ -22,7 +22,7 @@ Person.Builder()
 buildPerson {
   firstName { "Aaron" } // For basic types, you can use block syntax...
   lastName("Sarazan") // ...or parameter syntax!
-  address { buildAddress {
+  address { buildAddress { // TODO create convenience method to remove 'buildAddress'
     number(847)
     street("Sansome")
     addressType(AddressType.BUSINESS)
