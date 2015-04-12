@@ -20,8 +20,9 @@ Person.Builder()
 ### New Syntax
 ```kotlin
 buildPerson {
-  firstName { "Aaron" } // For basic types, you can use block syntax...
-  lastName("Sarazan") // ...or parameter syntax!
+  firstName { "Aaron" }   // For basic types, you can use block syntax...
+  middleName("M.")        // or parameter syntax...
+  lastName = "Sarazan"    // or even setters if the variable is public!
   address { buildAddress { // TODO create convenience method to remove 'buildAddress'
     number(847)
     street("Sansome")
@@ -38,10 +39,10 @@ To build this project, execute `./gradlew jar`. This will produce `build/libs/kb
 This project is still in very early development, so the usage is pretty spartan:
 
 ```bash
-java -jar kbuilders.jar --protoRoot=<root of java proto files> --kotlinRoot=<root of destination kotlin files> [--inline] [--methodPrefix=<prefix>]
+java -jar kbuilders.jar --javaRoot=<root of java proto files> --kotlinRoot=<root of destination kotlin files> [--inline] [--methodPrefix=<prefix>]
 ```
 
-This will produce a `.kt` file for each `.java` file in the tree that contains builders. More specifically it searches for classes with internal classes called `Builder` and generates extension methods for them. 
+This will produce a `.kt` file for each `.java` file in the tree that contains builders. More specifically it searches for classes with internal classes called `Builder` and generates extension methods for them.
 
 ### Known Issues
 * Only tested with [Wire](https://github.com/square/wire). Should theoretically work with any builder implementation.
