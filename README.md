@@ -1,6 +1,6 @@
 # kbuilders
 
-One of the most frustrating aspects of working with [Protocol Buffers](https://github.com/google/protobuf) is the unwieldy construction syntax, especially when building unit tests.
+One of the most frustrating aspects of working with [Protocol Buffers](https://github.com/google/protobuf), is the unwieldy construction syntax, especially when building unit tests.
 
 This [Kotlin](kotlinlang.org) tool applies the [Type-Safe Builder](http://kotlinlang.org/docs/reference/type-safe-builders.html) pattern to any source code implementing the [Builder Pattern](http://en.wikipedia.org/wiki/Builder_pattern), so that you can easily construct new objects with a nicer syntax.
 
@@ -41,7 +41,7 @@ buildPerson {
 ```
 
 ### Build
-To build this project, execute `./gradlew jar`. This will produce `build/libs/kbuilders.jar`.
+To build this project, execute `./gradlew jar`. This will produce `compiler/build/libs/kbuilders.jar`.
 
 ### Usage
 
