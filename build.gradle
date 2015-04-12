@@ -1,9 +1,12 @@
 buildscript {
+
+    ext.kotlin_version = "0.11.91"
+
     repositories {
         jcenter()
     }
     dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:0.11.91"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'net.jokubasdargis.buildtimer:gradle-plugin:0.1.0'
     }
 }
@@ -12,4 +15,8 @@ allprojects {
     repositories {
         jcenter()
     }
+}
+
+task jar {
+    dependsOn(':compiler:jar')
 }
