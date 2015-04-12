@@ -36,8 +36,6 @@ To build this project, execute `./gradlew jar`. This will produce `build/libs/kb
 
 ### Usage
 
-This project is still in very early development, so the usage is pretty spartan:
-
 ```bash
 java -jar kbuilders.jar --javaRoot=<root of java proto files> --kotlinRoot=<root of destination kotlin files> [--inline] [--methodPrefix=<prefix>]
 ```
