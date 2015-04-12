@@ -20,14 +20,23 @@ Person.Builder()
 ### New Syntax
 ```kotlin
 buildPerson {
-  firstName { "Aaron" }   // For basic types, you can use block syntax...
-  middleName("M.")        // or parameter syntax...
-  lastName = "Sarazan"    // or even setters if the variable is public!
-  address { buildAddress { // TODO create convenience method to remove 'buildAddress'
+  
+  // For basic types, you can use block syntax...
+  firstName { "Aaron" }
+  
+  // or parameter syntax...
+  middleName("M.")        
+  
+  // or even setters if the variable is public!
+  lastName = "Sarazan"    
+  
+  // TODO create convenience method to remove 'buildAddress'
+  address { buildAddress { 
     number(847)
     street("Sansome")
     addressType(AddressType.BUSINESS)
   } }
+  
 }
 ```
 
