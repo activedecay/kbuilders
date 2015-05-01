@@ -9,6 +9,12 @@ import com.levelmoney.kbuilders.Config
  * Copyright(c) 2015 Level, Inc.
  */
 
+public fun MethodDeclaration.hasParameters(count: Int? = null): Boolean {
+    val params = getParameters()
+    if (params == null) return count == 0
+    return count == null || params.size() == count
+}
+
 public fun MethodDeclaration.isBuildMethod():Boolean {
     return getName().equals("build") && !getType().toString().equals("void")
 }

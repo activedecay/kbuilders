@@ -1,10 +1,9 @@
 package com.levelmoney.kbuilders.javaparser.extensions
 
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
-import com.github.javaparser.ast.body.ConstructorDeclaration
-import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.body.*
 import com.github.javaparser.ast.type.ReferenceType
 import com.levelmoney.kbuilders.Config
+import levelmoney.kbuilders.javaparser.extensions.hasParameters
 
 /**
  * Created by Aaron Sarazan on 3/24/15
@@ -15,6 +14,10 @@ public fun ClassOrInterfaceDeclaration.getInternalClasses(): List<ClassOrInterfa
     return getMembers().filterIsInstance<ClassOrInterfaceDeclaration>()
 }
 
+public fun ClassOrInterfaceDeclaration.getParentClass(): ClassOrInterfaceDeclaration? {
+    return getParentNode() as ClassOrInterfaceDeclaration
+}
+
 // This could return false positives but should be adequate for v1.0
 public fun ClassOrInterfaceDeclaration.getBuilderClass(): ClassOrInterfaceDeclaration? {
     return getInternalClasses().firstOrNull { it.isBuilder() }
@@ -23,6 +26,35 @@ public fun ClassOrInterfaceDeclaration.getBuilderClass(): ClassOrInterfaceDeclar
 public fun ClassOrInterfaceDeclaration.getBuilderMethods(): List<MethodDeclaration> {
     return getMethods().filter {
         it.getType().toString().equals(getName()) && it.getParameters()?.size()?:0 > 0
+    }
+}
+
+public fun ClassOrInterfaceDeclaration.getDefaultCtor(): ConstructorDeclaration? {
+    return getConstructors().firstOrNull {
+        it.hasParameters(0) && it.getModifiers().and(ModifierSet.PUBLIC) != 0
+    }
+}
+
+public fun ClassOrInterfaceDeclaration.getCopyCtor(): ConstructorDeclaration? {
+    return getConstructors().firstOrNull {
+        it.hasParameters(1)
+                && it.getParameters()[0].getType().toString().equals(getParentClass()!!.getName())
+                && it.getModifiers().and(ModifierSet.PUBLIC) != 0
+    }
+}
+
+private fun ClassOrInterfaceDeclaration.getParentStaticFactory(): MethodDeclaration? {
+    return getParentClass()!!.getMethods().firstOrNull {
+        it.hasParameters(0)
+                && it.getName().equals("newBuilder")
+    }
+}
+
+private fun ClassOrInterfaceDeclaration.getParentCopyStaticFactory(): MethodDeclaration? {
+    return getParentClass()!!.getMethods().firstOrNull {
+        it.hasParameters(1)
+                && it.getParameters()[0].getType().toString().equals(getParentClass()!!.getName())
+                && it.getName().equals("newBuilder")
     }
 }
 
@@ -50,12 +82,27 @@ public fun ClassOrInterfaceDeclaration.assertIsBuilder() {
     if (!isBuilder()) throw IllegalStateException()
 }
 
+/**
+ * Run on the Builder class. If it has a private constructor it will search
+ * the parent for a newBuilder() method.
+ *
+ * Thanks Google...
+ */
+private fun ClassOrInterfaceDeclaration.builderGetCtor(): String {
+    return getDefaultCtor()?.getName()?:getParentStaticFactory()!!.getName()
+}
+private fun ClassOrInterfaceDeclaration.builderGetCopyCtor(): String? {
+    return getCopyCtor()?.getName()?:getParentCopyStaticFactory()?.getName()
+}
+
 public fun ClassOrInterfaceDeclaration.getCreator(config: Config): String {
     assertIsBuilder()
-    val type = getTypeForThisBuilder().toString()
+    val parent = getParentNode() as ClassOrInterfaceDeclaration
+    val type = parent.getName()
     val inline = if (config.inline) " inline " else " "
+    val newBuilder = builderGetCtor()
     return """public${inline}fun build$type(fn: $type.Builder.() -> Unit): $type {
-    val builder = $type.Builder()
+    val builder = $type.$newBuilder()
     builder.fn()
     return builder.build()
 }"""
@@ -63,14 +110,13 @@ public fun ClassOrInterfaceDeclaration.getCreator(config: Config): String {
 
 public fun ClassOrInterfaceDeclaration.getRebuild(config: Config): String? {
     assertIsBuilder()
-    val rawType = getTypeForThisBuilder()
-    if (getConstructors().firstOrNull {
-        it.getParameters()?.firstOrNull { it.getType().equals(rawType) } != null
-    } == null) return null
-    val type = rawType.toString()
+    val parent = getParentNode() as ClassOrInterfaceDeclaration
+    val type = parent.getName()
     val inline = if (config.inline) " inline " else " "
+    val newBuilder = builderGetCopyCtor()
+    if (newBuilder == null) return null
     return """public${inline}fun $type.rebuild(fn: $type.Builder.() -> Unit): $type {
-    val builder = $type.Builder(this)
+    val builder = $type.$newBuilder(this)
     builder.fn()
     return builder.build()
 }"""
