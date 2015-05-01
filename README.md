@@ -52,6 +52,5 @@ java -jar kbuilders.jar --javaRoot=<root of java proto files> --kotlinRoot=<root
 This will produce a `.kt` file for each `.java` file in the tree that contains builders. More specifically it searches for classes with internal classes called `Builder` and generates extension methods for them.
 
 ### Known Issues
-* Does not presently work with Google Protocol Buffers due to static factory for builders.
 * Currently uses a naive algorithm for collecting imports, then dedupes. Could be improved. 
 * I'd like to create a convenience method that removes `buildAddress` from the above example, but a limitation in [Javaparser](https://github.com/javaparser/javaparser) is currently making that difficult.
