@@ -42,4 +42,15 @@ public class BasicTests {
         }
         assertEquals(parent.child.value, 5)
     }
+
+    Test fun testGoogleStyle() {
+        val first = buildGoogleBuilderObject {
+            value = 1
+        }
+        val second = first.rebuild {
+            value = 2
+        }
+        assertEquals(first.value, 1)
+        assertEquals(second.value, 2)
+    }
 }

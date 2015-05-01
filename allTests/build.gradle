@@ -17,7 +17,7 @@ task generateTests << {
 
 gradle.projectsEvaluated {
     // TODO have this run automatically once the jar step is gone.
-//    generateTests.dependsOn(':compiler:jar')
+    generateTests.dependsOn(':compiler:jar')
     generateTests.dependsOn(cleanTests)
     compileKotlin.dependsOn(generateTests)
 }
