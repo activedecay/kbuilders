@@ -14,29 +14,12 @@
  * limitations under the License.
  */
 
-package com.levelmoney.kbuilders.test.builders;
+package levelmoney.kbuilders.javaparser.extensions
 
-public final class ParentObject {
+import com.github.javaparser.ast.body.ConstructorDeclaration
 
-    public final BasicObject child;
-
-    public ParentObject(Builder builder) {
-        this.child = builder.child;
-    }
-
-    public static class Builder {
-
-        public BasicObject child;
-
-        public Builder() {}
-
-        public Builder child(BasicObject child) {
-            this.child = child;
-            return this;
-        }
-
-        public ParentObject build() {
-            return new ParentObject(this);
-        }
-    }
+public fun ConstructorDeclaration.hasParameters(count: Int? = null): Boolean {
+    val params = getParameters()
+    if (params == null) return count == 0
+    return count == null || params.size() == count
 }
