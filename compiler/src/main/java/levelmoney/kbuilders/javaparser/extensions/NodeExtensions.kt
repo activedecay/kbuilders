@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
-package com.levelmoney.kbuilders.test.builders;
+package com.levelmoney.kbuilders.javaparser.extensions
 
-public final class ParentObject {
+import com.github.javaparser.ast.CompilationUnit
+import com.github.javaparser.ast.Node
 
-    public final BasicObject child;
-
-    public ParentObject(Builder builder) {
-        this.child = builder.child;
-    }
-
-    public static class Builder {
-
-        public BasicObject child;
-
-        public Builder() {}
-
-        public Builder child(BasicObject child) {
-            this.child = child;
-            return this;
+public fun Node.getPackageString(): String {
+    return when {
+        this is CompilationUnit -> {
+            getPackage().getName().getName()
         }
-
-        public ParentObject build() {
-            return new ParentObject(this);
-        }
+        else -> getParentNode().getPackageString()
     }
 }

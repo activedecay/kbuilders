@@ -14,29 +14,11 @@
  * limitations under the License.
  */
 
-package com.levelmoney.kbuilders.test.builders;
+package com.levelmoney.kbuilders
 
-public final class ParentObject {
+import joptsimple.OptionSet
+import kotlin.properties.Delegates
 
-    public final BasicObject child;
-
-    public ParentObject(Builder builder) {
-        this.child = builder.child;
-    }
-
-    public static class Builder {
-
-        public BasicObject child;
-
-        public Builder() {}
-
-        public Builder child(BasicObject child) {
-            this.child = child;
-            return this;
-        }
-
-        public ParentObject build() {
-            return new ParentObject(this);
-        }
-    }
-}
+public data class Config
+(val inline: Boolean,
+ val methodPrefix: String)
