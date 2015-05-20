@@ -3,6 +3,3 @@ rootProject.name = 'kbuilders'
 include 'allTests'
 
 include 'compiler'
-
-include 'compiler'
-
