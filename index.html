@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>KBuilders by Levelmoney</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>KBuilders</h1>
+          <h2>Apply Kotlin&#39;s type-safe builders everywhere.</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/Levelmoney/kbuilders/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/Levelmoney/kbuilders/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/Levelmoney/kbuilders" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <p>It's well-known that Clojure is the preferred back-end language of Level Money. That's all well and good, but here on the Android team, we use <a href="https://www.kotlinlang.org">Kotlin</a>. With its small footprint, low overhead, and <em>spicy musk</em>, Kotlin is one of the most compelling JVM languages to come out in years; Type inference, lambdas, extension methods-- it's all in there.</p>
+
+<h1>
+<a id="builders-galore" class="anchor" href="#builders-galore" aria-hidden="true"><span class="octicon octicon-link"></span></a>Builders Galore</h1>
+
+<p>Another library we use a lot is <a href="https://developers.google.com/protocol-buffers">Protocol Buffers</a>. I'll spare you the details, but suffice it to say we write a <em>lot</em> of code that looks like this:</p>
+
+<div class="highlight highlight-Java"><pre><span class="pl-smi">Person</span> bilbo <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Person</span>.<span class="pl-smi">Builder</span>()
+    .firstName(<span class="pl-s"><span class="pl-pds">"</span>Bilbo<span class="pl-pds">"</span></span>)
+    .lastName(<span class="pl-s"><span class="pl-pds">"</span>Baggins<span class="pl-pds">"</span></span>)
+    .carrying(<span class="pl-smi">Arrays</span><span class="pl-k">.</span>asList(ring, pipe))
+    .weapon(<span class="pl-k">new</span> <span class="pl-smi">Weapon</span>.<span class="pl-smi">Builder</span>()
+        .name(<span class="pl-s"><span class="pl-pds">"</span>Sting<span class="pl-pds">"</span></span>)
+        .size(<span class="pl-smi">Size</span><span class="pl-c1"><span class="pl-k">.</span>SMALL</span>)
+        .detects(<span class="pl-smi">Race</span><span class="pl-c1"><span class="pl-k">.</span>GOBLINS</span>)
+        .build()
+    .build();
+
+<span class="pl-c">// And if you want to copy and alter an object:</span>
+<span class="pl-smi">Person</span> frodo <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">Person</span>.<span class="pl-smi">Builder</span>(bilbo)
+    .firstName(<span class="pl-s"><span class="pl-pds">"</span>Frodo<span class="pl-pds">"</span></span>)
+    .build();</pre></div>
+
+<p>Wouldn't it be great if we could automatically use Kotlin's <a href="http://kotlinlang.org/docs/reference/type-safe-builders.html">typesafe builders</a> instead?</p>
+
+<h1>
+<a id="kbuilders" class="anchor" href="#kbuilders" aria-hidden="true"><span class="octicon octicon-link"></span></a>KBuilders</h1>
+
+<p><a href="https://github.com/Levelmoney/kbuilders">KBuilders</a> is a code generator that will automatically produce Kotlin builder extensions for all your protocol buffer objects.</p>
+
+<p>So now if you want to send your hobbits over the wire, it will look more like this:</p>
+
+<div class="highlight highlight-Kotlin"><pre><span class="pl-k">val</span> <span class="pl-en">hobbit</span> <span class="pl-k">=</span> buildPerson {
+    firstName <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>Bilbo<span class="pl-pds">"</span></span>
+    lastName <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>Baggins<span class="pl-pds">"</span></span>
+    carrying <span class="pl-k">=</span> listOf(ring, pipe)
+    weapon <span class="pl-k">=</span> buildWeapon {
+        name <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>Sting<span class="pl-pds">"</span></span>
+        size <span class="pl-k">=</span> Size<span class="pl-k">.</span><span class="pl-c1">SMALL</span>
+        detects <span class="pl-k">=</span> Race<span class="pl-k">.</span><span class="pl-c1">GOBLINS</span>
+    }
+}
+
+<span class="pl-c">// FRODOCOL BUFFERS</span>
+<span class="pl-k">val</span> <span class="pl-en">frodo</span> <span class="pl-k">=</span> buildPerson(hobbit) {
+    firstName <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>Frodo<span class="pl-pds">"</span></span> 
+}</pre></div>
+
+<h1>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started</h1>
+
+<p>To use KBuilders, just grab the <a href="https://github.com/Levelmoney/kbuilders/releases/download/0.9/kbuilders.jar">latest JAR</a></p>
+
+<div class="highlight highlight-bash"><pre>java -jar kbuilders.jar --javaRoot=<span class="pl-k">&lt;</span>root of java proto files<span class="pl-k">&gt;</span> --kotlinRoot=<span class="pl-k">&lt;</span>root of destination kotlin files<span class="pl-k">&gt;</span> [--inline] [--methodPrefix=<span class="pl-k">&lt;</span>prefix<span class="pl-k">&gt;</span>]</pre></div>
+
+<p>Check out our <a href="https://github.com/Levelmoney/kbuilders/blob/master/README.md">README</a> for more details.</p>
+
+<p><code>KBuilders</code> supports both Google and Wire protocol buffers, as well as most generic Builder implementations. Pull requests welcome!</p>
+        </section>
+
+        <footer>
+          KBuilders is maintained by <a href="https://github.com/Levelmoney">Levelmoney</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
