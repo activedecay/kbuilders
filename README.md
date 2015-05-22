@@ -1,7 +1,7 @@
 KBuilders for Kotlin
 ========
 
-KBuilders turns your Java builders into beautiful [Type-Safe Builders](http://kotlinlang.org/docs/reference/type-safe-builders.html). It is compatible with [Protocol Buffers](https://developers.google.com/protocol-buffers/), [Wire](https://github.com/square/wire), and most generic [Builders](http://en.wikipedia.org/wiki/Builder_pattern).
+KBuilders turns your Java builders into beautiful [Type-Safe Builders](http://kotlinlang.org/docs/reference/type-safe-builders.html). It is compatible with Protocol Buffers, Wire, and most generic Builder pattern implementations.
 
 For more information please see [the website][1].
 
