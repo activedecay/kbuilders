@@ -1,56 +1,33 @@
-Here at Level Money, we really like [Kotlin](https://www.kotlinlang.org). With its small footprint, low overhead, and _spicy musk_, Kotlin is one of the most compelling JVM languages to come out in years; Type inference, lambdas, extension methods-- it's all in there.
+KBuilders for Kotlin
+========
 
-# Builders Galore
-Another library we use a lot is [Protocol Buffers](https://developers.google.com/protocol-buffers). I'll spare you the details, but suffice it to say we write a _lot_ of code that looks like this:
+KBuilders turns your Java builders into beautiful [Type-Safe Builders](http://kotlinlang.org/docs/reference/type-safe-builders.html). It is compatible with [Protocol Buffers](https://developers.google.com/protocol-buffers/), [Wire](https://github.com/square/wire), and most generic [Builders](http://en.wikipedia.org/wiki/Builder_pattern).
 
-```Java
-Person bilbo = new Person.Builder()
-	.firstName("Bilbo")
-	.lastName("Baggins")
-	.carrying(Arrays.asList(ring, pipe))
-	.weapon(new Weapon.Builder()
-		.name("Sting")
-		.size(Size.SMALL)
-		.detects(Race.GOBLINS)
-		.build()
-	.build();
+For more information please see [the website][1].
 
-// And if you want to copy and alter an object:
-Person frodo = new Person.Builder(bilbo)
-	.firstName("Frodo")
-	.build();
-```
 
-Wouldn't it be great if we could automatically use Kotlin's [typesafe builders](http://kotlinlang.org/docs/reference/type-safe-builders.html) instead?
+Download
+--------
 
-# KBuilders
+Download [the latest standalone JAR][2] or build from source. We recommend integrating the jar into your existing protoc scripts.
 
-[KBuilders](https://github.com/Levelmoney/kbuilders) is a code generator that will automatically produce Kotlin builder extensions for all your protocol buffer objects.
+License
+=======
 
-So now if you want to send your hobbits over the wire, it will look more like this:
+    Copyright 2015 Level Money, Inc.
 
-```Kotlin
-val hobbit = buildPerson {
-	firstName = "Bilbo"
-	lastName = "Baggins"
-	carrying = listOf(ring, pipe)
-	weapon = buildWeapon {
-		name = "Sting"
-		size = Size.SMALL
-		detects = Race.GOBLINS
-	}
-}
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
 
-// FRODOCOL BUFFERS
-val frodo = buildPerson(hobbit) {
-	firstName = "Frodo" 
-}
-```
+       http://www.apache.org/licenses/LICENSE-2.0
 
-# Getting Started
-To use KBuilders, just grab the [latest JAR](https://github.com/Levelmoney/kbuilders/releases/download/0.9/kbuilders.jar)
-```bash
-java -jar kbuilders.jar --javaRoot=<root of java proto files> --kotlinRoot=<root of destination kotlin files> [--inline] [--methodPrefix=<prefix>]
-```
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
-`KBuilders` supports both Google and Wire protocol buffers, as well as most generic Builder implementations. Pull requests welcome!
+
+ [1]: http://levelmoney.github.io/kbuilders/
+ [2]: https://github.com/Levelmoney/kbuilders/releases/download/1.0/kbuilders.jar
