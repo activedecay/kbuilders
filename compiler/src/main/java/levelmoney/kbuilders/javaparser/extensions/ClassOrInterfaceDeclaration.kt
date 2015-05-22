@@ -137,6 +137,7 @@ public fun ClassOrInterfaceDeclaration.getMethodStrings(config: Config): List<St
     val retval = arrayListOf(getCreator(config))
     val rebuild = getRebuild(config)
     if (rebuild != null) retval.add(rebuild)
-    retval.addAll(getBuilderMethods().flatMap { it.toKotlin(config) })
+    // This would enable k-combinator syntax for every property in the builder. We can re-enable if people want it.
+//    retval.addAll(getBuilderMethods().flatMap { it.toKotlin(config) })
     return retval
 }

@@ -29,23 +29,21 @@ import java.io.File
  */
 fun main(args : Array<String>) {
     if (args.size() < 2) {
-        println("Usage: java -jar kbuilder.jar --javaRoot=<dir> --kotlinRoot=<dir>")
+        println("Usage: java -jar kbuilder.jar --javaRoot=<dir> --kotlinRoot=<dir> [--inline]")
         return
     }
     val parser = OptionParser()
     parser.accepts("javaRoot").withRequiredArg()
     parser.accepts("kotlinRoot").withRequiredArg()
-    parser.accepts("methodPrefix").withRequiredArg()
     parser.accepts("inline")
     val options = parser.parse(*args)
 
     val javaRoot = options.valueOf("javaRoot").toString()
     val kotlinRoot = options.valueOf("kotlinRoot").toString()
-
     val config = Config(
-            inline      = options.has("inline"),
-            methodPrefix= options.valueOf("methodPrefix")?.toString()?:""
+            inline = options.has("inline")
     )
+
     val dir = File(javaRoot)
     dir.recurse {
         if (it.isFile()) {

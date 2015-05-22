@@ -19,6 +19,4 @@ package com.levelmoney.kbuilders
 import joptsimple.OptionSet
 import kotlin.properties.Delegates
 
-public data class Config
-(val inline: Boolean,
- val methodPrefix: String)
+public data class Config (val inline: Boolean)
