@@ -1,56 +1,56 @@
-# kbuilders
+Here at Level Money, we really like [Kotlin](https://www.kotlinlang.org). With its small footprint, low overhead, and _spicy musk_, Kotlin is one of the most compelling JVM languages to come out in years; Type inference, lambdas, extension methods-- it's all in there.
 
-One of the most frustrating aspects of working with [Protocol Buffers](https://github.com/google/protobuf), is the unwieldy construction syntax, especially when building unit tests.
+# Builders Galore
+Another library we use a lot is [Protocol Buffers](https://developers.google.com/protocol-buffers). I'll spare you the details, but suffice it to say we write a _lot_ of code that looks like this:
 
-This [Kotlin](kotlinlang.org) tool applies the [Type-Safe Builder](http://kotlinlang.org/docs/reference/type-safe-builders.html) pattern to any source code implementing the [Builder Pattern](http://en.wikipedia.org/wiki/Builder_pattern), so that you can easily construct new objects with a nicer syntax.
+```Java
+Person bilbo = new Person.Builder()
+	.firstName("Bilbo")
+	.lastName("Baggins")
+	.carrying(Arrays.asList(ring, pipe))
+	.weapon(new Weapon.Builder()
+		.name("Sting")
+		.size(Size.SMALL)
+		.detects(Race.GOBLINS)
+		.build()
+	.build();
 
-### Old Syntax
-```kotlin
-Person.Builder()
-  .firstName("Aaron")
-  .lastName("Sarazan")
-  .address(Address.Builder()
-    .number(847)
-    .street("Sansome")
-    .addressType(AddressType.BUSINESS)
-    .build()
-  ).build()
+// And if you want to copy and alter an object:
+Person frodo = new Person.Builder(bilbo)
+	.firstName("Frodo")
+	.build();
 ```
 
-### New Syntax
-```kotlin
-buildPerson {
-  
-  // For basic types, you can use block syntax...
-  firstName { "Aaron" }
-  
-  // or parameter syntax...
-  middleName("M.")        
-  
-  // or even setters if the variable is public!
-  lastName = "Sarazan"    
-  
-  // TODO create convenience method to remove 'buildAddress'
-  address { buildAddress { 
-    number(847)
-    street("Sansome")
-    addressType(AddressType.BUSINESS)
-  } }
-  
+Wouldn't it be great if we could automatically use Kotlin's [typesafe builders](http://kotlinlang.org/docs/reference/type-safe-builders.html) instead?
+
+# KBuilders
+
+[KBuilders](https://github.com/Levelmoney/kbuilders) is a code generator that will automatically produce Kotlin builder extensions for all your protocol buffer objects.
+
+So now if you want to send your hobbits over the wire, it will look more like this:
+
+```Kotlin
+val hobbit = buildPerson {
+	firstName = "Bilbo"
+	lastName = "Baggins"
+	carrying = listOf(ring, pipe)
+	weapon = buildWeapon {
+		name = "Sting"
+		size = Size.SMALL
+		detects = Race.GOBLINS
+	}
+}
+
+// FRODOCOL BUFFERS
+val frodo = buildPerson(hobbit) {
+	firstName = "Frodo" 
 }
 ```
 
-### Build
-To build this project, execute `./gradlew jar`. This will produce `compiler/build/libs/kbuilders.jar`.
-
-### Usage
-
+# Getting Started
+To use KBuilders, just grab the [latest JAR](https://github.com/Levelmoney/kbuilders/releases/download/0.9/kbuilders.jar)
 ```bash
 java -jar kbuilders.jar --javaRoot=<root of java proto files> --kotlinRoot=<root of destination kotlin files> [--inline] [--methodPrefix=<prefix>]
 ```
 
-This will produce a `.kt` file for each `.java` file in the tree that contains builders. More specifically it searches for classes with internal classes called `Builder` and generates extension methods for them.
-
-### Known Issues
-* Currently uses a naive algorithm for collecting imports, then dedupes. Could be improved. 
-* I'd like to create a convenience method that removes `buildAddress` from the above example, but a limitation in [Javaparser](https://github.com/javaparser/javaparser) is currently making that difficult.
+`KBuilders` supports both Google and Wire protocol buffers, as well as most generic Builder implementations. Pull requests welcome!
