@@ -12,7 +12,7 @@ task cleanTests(type: Delete) {
 }
 task generateTests << {
     // TODO make this work without jar packaging, as it's really slow.
-    Runtime.getRuntime().exec('java -jar ../compiler/build/libs/kbuilders.jar --inline --javaRoot=src/main/java --kotlinRoot=src/main/kotlin', null, file('.'))
+    Runtime.getRuntime().exec('java -jar ../compiler/build/libs/kbuilders.jar --javaRoot=src/main/java --kotlinRoot=src/main/kotlin', null, file('.'))
 }
 
 gradle.projectsEvaluated {

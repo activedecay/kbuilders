@@ -29,19 +29,18 @@ import java.io.File
  */
 fun main(args : Array<String>) {
     if (args.size() < 2) {
-        println("Usage: java -jar kbuilder.jar --javaRoot=<dir> --kotlinRoot=<dir> [--inline]")
+        println("Usage: java -jar kbuilder.jar --javaRoot=<dir> --kotlinRoot=<dir>")
         return
     }
     val parser = OptionParser()
     parser.accepts("javaRoot").withRequiredArg()
     parser.accepts("kotlinRoot").withRequiredArg()
-    parser.accepts("inline")
     val options = parser.parse(*args)
 
     val javaRoot = options.valueOf("javaRoot").toString()
     val kotlinRoot = options.valueOf("kotlinRoot").toString()
     val config = Config(
-            inline = options.has("inline")
+            inline = true
     )
 
     val dir = File(javaRoot)
